@@ -21,8 +21,8 @@ function makeHttpClient(
   };
 }
 
-export async function buildPlainDataProvider(organization: string | null) {
-  const httpClient = await makeHttpClient(organization);
+export function buildPlainDataProvider(organization: string | null) {
+  const httpClient = makeHttpClient(organization);
 
   return {
     // get a list of records based on sort, filter, and pagination
