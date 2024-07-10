@@ -15,6 +15,7 @@ export function useDataProvider() {
       const plainDataProvider = buildPlainDataProvider(organizationRef.current);
       switch (resource) {
         case "organizations":
+        case "users":
           return plainDataProvider;
         default:
           return paginatedDataProvider;
