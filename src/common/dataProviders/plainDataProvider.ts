@@ -1,4 +1,4 @@
-import { fetchUtils } from "react-admin";
+import { fetchUtils, GetOneParams, UpdateParams } from "react-admin";
 import { authProvider } from "../../authProvider";
 import { serverUrl } from "../../config";
 
@@ -35,7 +35,13 @@ export function buildPlainDataProvider(organization: string | null) {
       });
     },
     // get a single record by id
-    getOne: (resource: string) => Promise.resolve({ data: {} }),
+    getOne: (resource: string, { id }: GetOneParams) => {
+      return httpClient(`${serverUrl}/${resource}/${id}`).then((d) => {
+        return {
+          data: d.json,
+        };
+      });
+    },
     // get a list of records based on an array of ids
     getMany: (resource: string) => Promise.resolve({ data: {} }),
     // get the records referenced to another record, e.g. comments for a post
@@ -43,7 +49,16 @@ export function buildPlainDataProvider(organization: string | null) {
     // create a record
     create: (resource: string) => Promise.resolve({ data: {} }),
     // update a record based on a patch
-    update: (resource: string) => Promise.resolve({ data: {} }),
+    update: (resource: string, { id, data }: UpdateParams) => {
+      return httpClient(`${serverUrl}/${resource}/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }).then((d) => {
+        return {
+          data: d.json,
+        };
+      });
+    },
     // update a list of records based on an array of ids and a common patch
     updateMany: (resource: string) => Promise.resolve({ data: {} }),
     // delete a record by id
