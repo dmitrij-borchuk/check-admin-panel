@@ -3,11 +3,11 @@ import { type DataProvider, fetchUtils } from "react-admin";
 
 export default (
   apiUrl: string,
-  httpClient = fetchUtils.fetchJson
+  httpClient = fetchUtils.fetchJson,
 ): DataProvider => ({
   getList: (resource, params) => {
-    const { page, perPage } = params.pagination;
-    const { field, order } = params.sort;
+    const { page = 1, perPage } = params.pagination ?? {};
+    const { field, order } = params.sort ?? {};
 
     const query = {
       page: page - 1,
@@ -26,12 +26,12 @@ export default (
     return httpClient(`${apiUrl}/${resource}/${params.id}`).then(
       ({ json }) => ({
         data: json,
-      })
+      }),
     );
   },
   getMany: (resource, params) => {
     return Promise.all(
-      params.ids.map((id) => httpClient(`${apiUrl}/${resource}/${id}`))
+      params.ids.map((id) => httpClient(`${apiUrl}/${resource}/${id}`)),
     ).then((responses) => ({
       data: responses.map(({ json }) => json),
     }));
@@ -69,8 +69,8 @@ export default (
         httpClient(`${apiUrl}/${resource}/${id}`, {
           method: "PUT",
           body: JSON.stringify(params.data),
-        })
-      )
+        }),
+      ),
     ).then((responses) => ({ data: responses.map(({ json }) => json.id) })),
 
   create: (resource, params) =>
@@ -95,8 +95,8 @@ export default (
           headers: new Headers({
             "Content-Type": "text/plain",
           }),
-        })
-      )
+        }),
+      ),
     ).then((responses) => ({
       data: responses.map(({ json }) => json.id),
     })),
